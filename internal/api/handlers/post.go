@@ -1,0 +1,180 @@
+package handlers
+
+import (
+	"bytes"
+	"client/internal/converter"
+	"client/internal/models"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+func (h *handler) WritePost() {
+	header, err := h.console.ReadData("post header")
+
+	body, err := h.console.ReadData("post body")
+
+	jsonStr := []byte(fmt.Sprintf(`{"header": "%s", "body": "%s"}`, header, body))
+	url := h.baseUrl + "/posts/"
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	req.Header.Set("JWT-Token", h.secretKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	p := &models.WritePostResponseBody{}
+
+	if err := json.NewDecoder(resp.Body).Decode(p); err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	defer func(Body io.ReadCloser) {
+		if err := Body.Close(); err != nil {
+			h.console.WriteLine(err.Error())
+		}
+	}(resp.Body)
+	if p.Message == "success" {
+		h.console.WriteLine(fmt.Sprintf("postId: %d", p.Data))
+	} else {
+		h.console.WriteLine(p.Message)
+	}
+}
+
+func (h *handler) GetPosts() {
+	url := h.baseUrl + "/posts/"
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Set("JWT-Token", h.secretKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	p := &models.GetPostsResponseBody{}
+
+	if err := json.NewDecoder(resp.Body).Decode(p); err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	defer func(Body io.ReadCloser) {
+		if err := Body.Close(); err != nil {
+			h.console.WriteLine(err.Error())
+		}
+	}(resp.Body)
+
+	if p.Message == "success" {
+		for i, post := range p.Data {
+			h.console.WriteLine(converter.PostToString(post))
+			if i != len(p.Data)-1 {
+				h.console.WriteLine("----------")
+			}
+		}
+	} else {
+		h.console.WriteLine(p.Message)
+	}
+}
+
+func (h *handler) EditPost() {
+	id, err := h.console.ReadData("post id")
+
+	header, err := h.console.ReadData("post header")
+
+	body, err := h.console.ReadData("post body")
+
+	jsonStr := []byte(fmt.Sprintf(`{"header": "%s", "body": "%s"}`, header, body))
+	url := h.baseUrl + "/posts/" + id
+	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(jsonStr))
+	req.Header.Set("JWT-Token", h.secretKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	p := &models.ResultResponseBody{}
+
+	if err := json.NewDecoder(resp.Body).Decode(p); err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	defer func(Body io.ReadCloser) {
+		if err := Body.Close(); err != nil {
+			h.console.WriteLine(err.Error())
+		}
+	}(resp.Body)
+	h.console.WriteLine(p.Message)
+}
+
+func (h *handler) GetPost() {
+	id, err := h.console.ReadData("post id")
+
+	url := h.baseUrl + "/posts/" + id
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Set("JWT-Token", h.secretKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	p := &models.GetPostResponseBody{}
+
+	if err := json.NewDecoder(resp.Body).Decode(p); err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	defer func(Body io.ReadCloser) {
+		if err := Body.Close(); err != nil {
+			h.console.WriteLine(err.Error())
+		}
+	}(resp.Body)
+	if p.Message == "success" {
+		h.console.WriteLine(converter.PostToString(&p.Data))
+	} else {
+		h.console.WriteLine(p.Message)
+	}
+}
+
+func (h *handler) DeletePost() {
+	id, err := h.console.ReadData("post id")
+
+	url := h.baseUrl + "/posts/" + id
+	req, err := http.NewRequest("DELETE", url, nil)
+	req.Header.Set("JWT-Token", h.secretKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	p := &models.ResultResponseBody{}
+
+	if err := json.NewDecoder(resp.Body).Decode(p); err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	defer func(Body io.ReadCloser) {
+		if err := Body.Close(); err != nil {
+			h.console.WriteLine(err.Error())
+		}
+	}(resp.Body)
+	h.console.WriteLine(p.Message)
+}
