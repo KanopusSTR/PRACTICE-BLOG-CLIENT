@@ -20,7 +20,8 @@ func newServiceProvider() *serviceProvider {
 
 func (s *serviceProvider) output() console.Console {
 	reader := bufio.NewReader(os.Stdin)
-	s.console = console.NewConsole(reader)
+	writer := bufio.NewWriter(os.Stdout)
+	s.console = console.NewConsole(reader, writer)
 	return s.console
 }
 

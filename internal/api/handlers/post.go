@@ -12,8 +12,16 @@ import (
 
 func (h *handler) WritePost() {
 	header, err := h.console.ReadData("post header")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	body, err := h.console.ReadData("post body")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	jsonStr := []byte(fmt.Sprintf(`{"header": "%s", "body": "%s"}`, header, body))
 	url := h.baseUrl + "/posts/"
@@ -85,10 +93,22 @@ func (h *handler) GetPosts() {
 
 func (h *handler) EditPost() {
 	id, err := h.console.ReadData("post id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	header, err := h.console.ReadData("post header")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	body, err := h.console.ReadData("post body")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	jsonStr := []byte(fmt.Sprintf(`{"header": "%s", "body": "%s"}`, header, body))
 	url := h.baseUrl + "/posts/" + id
@@ -119,6 +139,10 @@ func (h *handler) EditPost() {
 
 func (h *handler) GetPost() {
 	id, err := h.console.ReadData("post id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	url := h.baseUrl + "/posts/" + id
 	req, err := http.NewRequest("GET", url, nil)
@@ -152,6 +176,10 @@ func (h *handler) GetPost() {
 
 func (h *handler) DeletePost() {
 	id, err := h.console.ReadData("post id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	url := h.baseUrl + "/posts/" + id
 	req, err := http.NewRequest("DELETE", url, nil)

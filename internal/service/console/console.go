@@ -5,7 +5,7 @@ import "client/internal/console"
 type I interface {
 	ReadLine() (string, error)
 	ReadData(name string) (string, error)
-	ReadPassword() string
+	ReadPassword() (string, error)
 	WriteLine(string string)
 	Write(string string)
 }

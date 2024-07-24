@@ -1,5 +1,11 @@
 package console
 
+import "log"
+
 func (cs *consoleService) Write(string string) {
-	cs.console.Write(string)
+	err := cs.console.Write(string)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 }

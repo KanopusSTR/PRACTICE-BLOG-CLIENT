@@ -5,14 +5,20 @@ import (
 	"os"
 )
 
-func (cs *consoleService) ReadPassword() string {
+func (cs *consoleService) ReadPassword() (string, error) {
 	for {
-		cs.console.Write("Enter password: ")
+		err := cs.console.Write("Enter password: ")
+		if err != nil {
+			return "", err
+		}
 		password, err := go_asterisks.GetUsersPassword("", true, os.Stdin, os.Stdout)
 		if err != nil {
-			cs.console.WriteLine(err.Error())
+			err2 := cs.console.WriteLine(err.Error())
+			if err2 != nil {
+				return "", err2
+			}
 		} else {
-			return string(password)
+			return string(password), nil
 		}
 	}
 }

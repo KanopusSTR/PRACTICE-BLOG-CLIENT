@@ -12,8 +12,16 @@ import (
 
 func (h *handler) WriteComment() {
 	id, err := h.console.ReadData("id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	text, err := h.console.ReadData("comment text")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	jsonStr := []byte(fmt.Sprintf(`{"post_id": %s, "text": "%s"}`, id, text))
 	url := h.baseUrl + "/comments/"
@@ -46,6 +54,10 @@ func (h *handler) WriteComment() {
 
 func (h *handler) GetComments() {
 	postId, err := h.console.ReadData("post id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	jsonStr := []byte(fmt.Sprintf(`{"post_id": %s}`, postId))
 	url := h.baseUrl + "/comments/"
@@ -85,8 +97,16 @@ func (h *handler) GetComments() {
 
 func (h *handler) DeleteComment() {
 	postId, err := h.console.ReadData("post id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	commentId, err := h.console.ReadData("comment id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	jsonStr := []byte(fmt.Sprintf(`{"post_id": %s}`, postId))
 	url := h.baseUrl + "/comments/" + commentId

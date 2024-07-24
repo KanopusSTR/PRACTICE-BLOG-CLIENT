@@ -11,10 +11,22 @@ import (
 
 func (h *handler) Register() {
 	username, err := h.console.ReadData("username")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	mail, err := h.console.ReadData("user mail")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
-	password := h.console.ReadPassword()
+	password, err := h.console.ReadPassword()
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	url := h.baseUrl + "/register"
 
@@ -45,8 +57,16 @@ func (h *handler) Register() {
 
 func (h *handler) Login() {
 	mail, err := h.console.ReadData("user mail")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
-	password := h.console.ReadPassword()
+	password, err := h.console.ReadPassword()
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	url := h.baseUrl + "/login"
 
@@ -82,6 +102,10 @@ func (h *handler) Login() {
 
 func (h *handler) GetProfile() {
 	mail, err := h.console.ReadData("user mail")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	url := h.baseUrl + "/users/" + mail
 	req, err := http.NewRequest("GET", url, nil)
