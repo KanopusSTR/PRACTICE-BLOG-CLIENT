@@ -3,6 +3,7 @@ package app
 import (
 	"bufio"
 	"client/internal/api/handlers"
+	"client/internal/api/readWriter"
 	"client/internal/console"
 	cs "client/internal/service/console"
 	"os"
@@ -32,4 +33,8 @@ func (s *serviceProvider) serviceImpl() cs.I {
 
 func (s *serviceProvider) handler(url string) handlers.I {
 	return handlers.New(url, s.serviceImpl())
+}
+
+func (s *serviceProvider) readWriter() readWriter.I {
+	return readWriter.New(s.service)
 }

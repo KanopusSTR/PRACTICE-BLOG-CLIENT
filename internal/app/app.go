@@ -61,7 +61,9 @@ func (app *App) initServiceProvider() error {
 }
 
 func (app *App) initHTTPClient() error {
-	app.client = api.NewClient(app.serviceProvider.handler(app.url))
+	h := app.serviceProvider.handler(app.url)
+	rw := app.serviceProvider.readWriter()
+	app.client = api.NewClient(h, rw)
 	return nil
 }
 

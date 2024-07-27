@@ -2,6 +2,7 @@ package api
 
 import (
 	"client/internal/api/handlers"
+	"client/internal/api/readWriter"
 	"client/pkg/commands"
 )
 
@@ -11,16 +12,17 @@ type Client interface {
 
 type client struct {
 	handlers handlers.I
+	rw       readWriter.I
 }
 
-func NewClient(i handlers.I) Client {
-	return &client{handlers: i}
+func NewClient(i handlers.I, rw readWriter.I) Client {
+	return &client{handlers: i, rw: rw}
 }
 
 func (c *client) Run() error {
 	for {
-		c.handlers.Write("> ")
-		line, err := c.handlers.ReadLine()
+		c.rw.Write("> ")
+		line, err := c.rw.ReadLine()
 		if err != nil {
 			return err
 		}
@@ -51,9 +53,9 @@ func (c *client) Run() error {
 			c.handlers.DeleteComment()
 
 		case commands.Help:
-			c.handlers.WriteLine(commands.Get())
+			c.rw.WriteLine(commands.Get())
 		default:
-			c.handlers.WriteLine(commands.Unknown)
+			c.rw.WriteLine(commands.Unknown)
 		}
 	}
 }
