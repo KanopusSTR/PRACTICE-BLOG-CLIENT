@@ -5,13 +5,19 @@ import (
 	"client/internal/converter"
 	"client/internal/models"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 func (h *handler) WriteComment() {
-	id, err := h.console.ReadData("id")
+	ids, err := h.console.ReadData("id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	id, err := strconv.Atoi(ids)
 	if err != nil {
 		h.console.WriteLine(err.Error())
 		return
@@ -23,7 +29,12 @@ func (h *handler) WriteComment() {
 		return
 	}
 
-	jsonStr := []byte(fmt.Sprintf(`{"post_id": %s, "text": "%s"}`, id, text))
+	st := models.WriteCommentRequestBody{PostId: id, Text: text}
+	jsonStr, err := json.Marshal(st)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	url := h.baseUrl + "/comments/"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("JWT-Token", h.secretKey)
@@ -59,7 +70,19 @@ func (h *handler) GetComments() {
 		return
 	}
 
-	jsonStr := []byte(fmt.Sprintf(`{"post_id": %s}`, postId))
+	id, err := strconv.Atoi(postId)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	st := models.GetCommentsRequest{PostId: id}
+	jsonStr, err := json.Marshal(st)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
 	url := h.baseUrl + "/comments/"
 	req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("JWT-Token", h.secretKey)
@@ -96,20 +119,37 @@ func (h *handler) GetComments() {
 }
 
 func (h *handler) DeleteComment() {
-	postId, err := h.console.ReadData("post id")
+	postIds, err := h.console.ReadData("post id")
 	if err != nil {
 		h.console.WriteLine(err.Error())
 		return
 	}
 
-	commentId, err := h.console.ReadData("comment id")
+	postId, err := strconv.Atoi(postIds)
 	if err != nil {
 		h.console.WriteLine(err.Error())
 		return
 	}
 
-	jsonStr := []byte(fmt.Sprintf(`{"post_id": %s}`, postId))
-	url := h.baseUrl + "/comments/" + commentId
+	commentIds, err := h.console.ReadData("comment id")
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	commentId, err := strconv.Atoi(commentIds)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	st := models.DeleteCommentRequest{PostId: postId, CommentId: commentId}
+	jsonStr, err := json.Marshal(st)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+	url := h.baseUrl + "/comments/" + commentIds
 	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("JWT-Token", h.secretKey)
 

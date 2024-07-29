@@ -9,9 +9,13 @@ type WriteCommentRequestBody struct {
 	PostId int    `json:"post_id"`
 }
 
-type GetCommentsRequestBody struct {
-	PostId   int                 `json:"post_id"`
-	Comments []*entities.Comment `json:"comments"`
+type GetCommentsRequest struct {
+	PostId int `json:"post_id"`
+}
+
+type DeleteCommentRequest struct {
+	PostId    int `json:"post_id"`
+	CommentId int `json:"comment_id"`
 }
 
 type GetCommentsResponse struct {

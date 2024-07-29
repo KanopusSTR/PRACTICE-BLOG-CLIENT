@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 )
 
 func (h *handler) WritePost() {
@@ -23,7 +24,15 @@ func (h *handler) WritePost() {
 		return
 	}
 
-	jsonStr := []byte(fmt.Sprintf(`{"header": "%s", "body": "%s"}`, header, body))
+	st := models.WritePostRequestBody{
+		Header: header,
+		Body:   body,
+	}
+	jsonStr, err := json.Marshal(st)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	url := h.baseUrl + "/posts/"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("JWT-Token", h.secretKey)
@@ -110,7 +119,15 @@ func (h *handler) EditPost() {
 		return
 	}
 
-	jsonStr := []byte(fmt.Sprintf(`{"header": "%s", "body": "%s"}`, header, body))
+	st := models.EditPostRequestBody{
+		Header: header,
+		Body:   body,
+	}
+	jsonStr, err := json.Marshal(st)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	url := h.baseUrl + "/posts/" + id
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("JWT-Token", h.secretKey)
@@ -175,13 +192,19 @@ func (h *handler) GetPost() {
 }
 
 func (h *handler) DeletePost() {
-	id, err := h.console.ReadData("post id")
+	ids, err := h.console.ReadData("post id")
 	if err != nil {
 		h.console.WriteLine(err.Error())
 		return
 	}
 
-	url := h.baseUrl + "/posts/" + id
+	_, err = strconv.Atoi(ids)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
+
+	url := h.baseUrl + "/posts/" + ids
 	req, err := http.NewRequest("DELETE", url, nil)
 	req.Header.Set("JWT-Token", h.secretKey)
 

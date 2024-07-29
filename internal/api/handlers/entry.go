@@ -30,7 +30,16 @@ func (h *handler) Register() {
 
 	url := h.baseUrl + "/register"
 
-	jsonStr := []byte(fmt.Sprintf(`{"name": "%s", "mail": "%s", "password": "%s"}`, username, mail, password))
+	st := models.RegisterRequestBody{
+		Name:     username,
+		Mail:     mail,
+		Password: password,
+	}
+	jsonStr, err := json.Marshal(st)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 
 	client := &http.Client{}
@@ -45,11 +54,13 @@ func (h *handler) Register() {
 	err = json.NewDecoder(resp.Body).Decode(p)
 	if err != nil {
 		h.console.WriteLine(err.Error())
+		return
 	}
 
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
+			h.console.WriteLine(err.Error())
 		}
 	}(resp.Body)
 	h.console.WriteLine(p.Message)
@@ -70,7 +81,15 @@ func (h *handler) Login() {
 
 	url := h.baseUrl + "/login"
 
-	jsonStr := []byte(fmt.Sprintf(`{"mail": "%s", "password": "%s"}`, mail, password))
+	st := models.LoginRequestBody{
+		Mail:     mail,
+		Password: password,
+	}
+	jsonStr, err := json.Marshal(st)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 
 	client := &http.Client{}
@@ -91,7 +110,7 @@ func (h *handler) Login() {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-
+			h.console.WriteLine(err.Error())
 		}
 	}(resp.Body)
 	h.console.WriteLine(p.Message)

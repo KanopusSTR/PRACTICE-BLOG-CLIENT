@@ -4,7 +4,12 @@ import (
 	"client/internal/entities"
 )
 
-type PostRequestBody struct {
+type WritePostRequestBody struct {
+	Header string `json:"header"`
+	Body   string `json:"body"`
+}
+
+type EditPostRequestBody struct {
 	Header string `json:"header"`
 	Body   string `json:"body"`
 }
