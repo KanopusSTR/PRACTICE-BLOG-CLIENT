@@ -1,5 +1,9 @@
 package commands
 
+import "fmt"
+
 func Get() string {
-	return "register, login, getProfile, writePost, getPosts, editPost, getPost, deletePost, writeComment, getComments, deleteComment"
+	return fmt.Sprintf("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s",
+		Register, Login, GetProfile, WritePost, GetPosts, EditPost,
+		GetPost, DeletePost, WriteComment, GetComments, DeleteComment)
 }

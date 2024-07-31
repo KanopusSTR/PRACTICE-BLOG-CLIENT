@@ -1,7 +1,6 @@
 package app
 
 import (
-	"bufio"
 	"client/internal/api/handlers"
 	"client/internal/api/readWriter"
 	"client/internal/console"
@@ -20,9 +19,7 @@ func newServiceProvider() *serviceProvider {
 }
 
 func (s *serviceProvider) output() console.Console {
-	reader := bufio.NewReader(os.Stdin)
-	writer := bufio.NewWriter(os.Stdout)
-	s.console = console.NewConsole(reader, writer)
+	s.console = console.NewConsole(os.Stdin, os.Stdout, nil, nil)
 	return s.console
 }
 

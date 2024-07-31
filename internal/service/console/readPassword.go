@@ -2,7 +2,6 @@ package console
 
 import (
 	"gitlab.com/david_mbuvi/go_asterisks"
-	"os"
 )
 
 func (cs *consoleService) ReadPassword() (string, error) {
@@ -11,7 +10,7 @@ func (cs *consoleService) ReadPassword() (string, error) {
 		if err != nil {
 			return "", err
 		}
-		password, err := go_asterisks.GetUsersPassword("", true, os.Stdin, os.Stdout)
+		password, err := go_asterisks.GetUsersPassword("", true, cs.console.GetFileReader(), cs.console.GetFileWriter())
 		if err != nil {
 			err2 := cs.console.WriteLine(err.Error())
 			if err2 != nil {
