@@ -26,5 +26,4 @@ type GetPostResponseBody struct {
 
 type WritePostResponseBody struct {
 	Message string `json:"message"`
-	Data    int    `json:"data"`
 }

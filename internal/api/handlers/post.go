@@ -5,7 +5,6 @@ import (
 	"client/internal/converter"
 	"client/internal/models"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -56,16 +55,16 @@ func (h *handler) WritePost() {
 			h.console.WriteLine(err.Error())
 		}
 	}(resp.Body)
-	if p.Message == "success" {
-		h.console.WriteLine(fmt.Sprintf("postId: %d", p.Data))
-	} else {
-		h.console.WriteLine(p.Message)
-	}
+	h.console.WriteLine(p.Message)
 }
 
 func (h *handler) GetPosts() {
 	url := h.baseUrl + "/posts/"
 	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}
