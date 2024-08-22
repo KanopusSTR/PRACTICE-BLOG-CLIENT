@@ -34,6 +34,10 @@ func (h *handler) WritePost() {
 	}
 	url := h.baseUrl + "/posts/"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}
@@ -129,6 +133,10 @@ func (h *handler) EditPost() {
 	}
 	url := h.baseUrl + "/posts/" + id
 	req, err := http.NewRequest("PATCH", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}
@@ -162,6 +170,10 @@ func (h *handler) GetPost() {
 
 	url := h.baseUrl + "/posts/" + id
 	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}
@@ -205,6 +217,10 @@ func (h *handler) DeletePost() {
 
 	url := h.baseUrl + "/posts/" + ids
 	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}

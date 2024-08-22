@@ -41,6 +41,10 @@ func (h *handler) Register() {
 		return
 	}
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -91,6 +95,10 @@ func (h *handler) Login() {
 		return
 	}
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -128,6 +136,10 @@ func (h *handler) GetProfile() {
 
 	url := h.baseUrl + "/users/" + mail
 	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}

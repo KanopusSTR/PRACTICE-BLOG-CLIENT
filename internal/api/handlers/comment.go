@@ -37,6 +37,10 @@ func (h *handler) WriteComment() {
 	}
 	url := h.baseUrl + "/comments/"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}
@@ -60,7 +64,6 @@ func (h *handler) WriteComment() {
 	}(resp.Body)
 
 	h.console.WriteLine(p.Message)
-	return
 }
 
 func (h *handler) GetComments() {
@@ -85,6 +88,10 @@ func (h *handler) GetComments() {
 
 	url := h.baseUrl + "/comments/"
 	req, err := http.NewRequest("GET", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}
@@ -151,6 +158,10 @@ func (h *handler) DeleteComment() {
 	}
 	url := h.baseUrl + "/comments/" + commentIds
 	req, err := http.NewRequest("DELETE", url, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		h.console.WriteLine(err.Error())
+		return
+	}
 	req.Header.Set("JWT-Token", h.secretKey)
 
 	client := &http.Client{}
